@@ -1,20 +1,18 @@
-import type { ValidatedEventAPIGatewayProxyEvent } from "@libs/api-gateway";
-import { formatJSONResponse } from "@libs/api-gateway";
-import { middyfy } from "@libs/lambda";
+import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/api-gateway';
+import { formatJSONResponse } from '@libs/api-gateway';
+import { middyfy } from '@libs/lambda';
 
-import axios from "axios";
-import schema from "./schema";
+import axios from 'axios';
+import schema from './schema';
 
 /**
  * This function is the main entrypoint for the pagerduty webhook event
  */
-const pagerdutyWebhook: ValidatedEventAPIGatewayProxyEvent<
-  typeof schema
-> = async (event) => {
+const pagerdutyWebhook: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
   const firstMessage = event.body.messages[0];
   if (!firstMessage) {
     return formatJSONResponse({
-      message: "No messages in PagerDuty event",
+      message: 'No messages in PagerDuty event',
     });
   }
 
@@ -22,7 +20,7 @@ const pagerdutyWebhook: ValidatedEventAPIGatewayProxyEvent<
   const incidentNumber = firstMessage.incident.incident_number;
   if (!incidentId) {
     return formatJSONResponse({
-      message: "No incident id in PagerDuty event",
+      message: 'No incident id in PagerDuty event',
     });
   }
 
@@ -30,7 +28,7 @@ const pagerdutyWebhook: ValidatedEventAPIGatewayProxyEvent<
   await respondToPagerDuty(incidentId, link);
 
   return formatJSONResponse({
-    message: "Received PagerDuty webook event",
+    message: 'Received PagerDuty webook event',
   });
 };
 
@@ -42,15 +40,14 @@ const pagerdutyWebhook: ValidatedEventAPIGatewayProxyEvent<
 const createSwitchboardRoom = async (incidentNumber: string) => {
   const SB_API_KEY = process.env.SB_API_KEY;
   const SB_WORKSPACE_ID = process.env.SB_WORKSPACE_ID;
-  const API_BASE_URL =
-    process.env.API_BASE_URL || "https://beta-api.beta.switchboard.app";
+  const API_BASE_URL = process.env.API_BASE_URL || 'https://beta-api.beta.switchboard.app';
 
   const options = {
-    method: "POST",
+    method: 'POST',
     url: `${API_BASE_URL}/api/v1/create-room`,
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
       Authorization: `${SB_API_KEY}`,
     },
     data: {
@@ -80,11 +77,11 @@ const respondToPagerDuty = async (incidentId: string, sbLink: string) => {
   const PD_FROM_EMAIL = process.env.PD_FROM_EMAIL;
 
   const options = {
-    method: "POST",
+    method: 'POST',
     url: `https://api.pagerduty.com/incidents/${incidentId}/notes`,
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
       From: PD_FROM_EMAIL,
       Authorization: `Token token=${PD_API_KEY}`,
     },

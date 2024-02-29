@@ -1,16 +1,16 @@
-import schema from "./schema";
-import { handlerPath } from "@libs/handler-resolver";
+import schema from './schema';
+import { handlerPath } from '@libs/handler-resolver';
 
 export default {
   handler: `${handlerPath(__dirname)}/handler.main`,
   events: [
     {
       http: {
-        method: "post",
-        path: "pagerduty-webhook",
+        method: 'post',
+        path: 'pagerduty-webhook',
         request: {
           schemas: {
-            "application/json": schema,
+            'application/json': schema,
           },
         },
       },

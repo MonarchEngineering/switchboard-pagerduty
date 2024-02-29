@@ -1,1 +1,1 @@
-export { default as pagerdutyWebhook } from "./pagerduty-webhook";
+export { default as pagerdutyWebhook } from './pagerduty-webhook';
