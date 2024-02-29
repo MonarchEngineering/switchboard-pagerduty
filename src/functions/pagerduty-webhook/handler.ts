@@ -42,10 +42,12 @@ const pagerdutyWebhook: ValidatedEventAPIGatewayProxyEvent<
 const createSwitchboardRoom = async (incidentNumber: string) => {
   const SB_API_KEY = process.env.SB_API_KEY;
   const SB_WORKSPACE_ID = process.env.SB_WORKSPACE_ID;
+  const API_BASE_URL =
+    process.env.API_BASE_URL || "https://beta-api.beta.switchboard.app";
 
   const options = {
     method: "POST",
-    url: `https://staging-api.staging.switchboard.app/api/v1/create-room`,
+    url: `${API_BASE_URL}/api/v1/create-room`,
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
